@@ -6,19 +6,9 @@ namespace App\Controller;
 
 use Cake\Event\EventInterface;
 
-/**
- * Users Controller
- *
- * @property \App\Model\Table\UsersTable $Users
- * @method \App\Model\Entity\User[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
 class UsersController extends AppController
 {
-    /**
-     * Index method
-     *
-     * @return \Cake\Http\Response|null|void Renders view
-     */
+
     public function index()
     {
         $users = $this->paginate($this->Users);
@@ -26,13 +16,6 @@ class UsersController extends AppController
         $this->set(compact('users'));
     }
 
-    /**
-     * View method
-     *
-     * @param string|null $id User id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
     public function view($id = null)
     {
         $user = $this->Users->get($id, [
@@ -42,18 +25,6 @@ class UsersController extends AppController
         $this->set(compact('user'));
     }
 
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
-     */
-    /**
-     * Edit method
-     *
-     * @param string|null $id User id.
-     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
     public function edit($id = null)
     {
         $user = $this->Users->get($id, [
@@ -71,13 +42,6 @@ class UsersController extends AppController
         $this->set(compact('user'));
     }
 
-    /**
-     * Delete method
-     *
-     * @param string|null $id User id.
-     * @return \Cake\Http\Response|null|void Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
@@ -124,7 +88,7 @@ class UsersController extends AppController
             $user = $this->Users->findByEmail($email)->first();
 
             if ($user) {
-                $temporaryPassword = bin2hex(random_bytes(4)); // Exemple : "ab12cd34"
+                $temporaryPassword = bin2hex(random_bytes(4));
 
                 $user->password = $temporaryPassword;
 
@@ -168,8 +132,6 @@ public function dashboard()
     public function beforeFilter(\Cake\Event\EventInterface $event)
 {
     parent::beforeFilter($event);
-    // Configurez l'action de connexion pour ne pas exiger d'authentification,
-    // évitant ainsi le problème de la boucle de redirection infinie
     $this->Authentication->addUnauthenticatedActions(['login', 'creation','forgotPassword']);
 }
 
@@ -177,9 +139,7 @@ public function login()
 {
     $this->request->allowMethod(['get', 'post']);
     $result = $this->Authentication->getResult();
-    // indépendamment de POST ou GET, rediriger si l'utilisateur est connecté
     if ($result && $result->isValid()) {
-        // rediriger vers /articles après la connexion réussie
         $redirect = $this->request->getQuery('redirect', [
             'controller' => 'Users', 
             'action' => 'dashboard'
