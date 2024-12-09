@@ -103,4 +103,14 @@ class Application extends BaseApplication
  
         return $authenticationService;
     }
+
+    public function beforeFilter(\Cake\Event\EventInterface $event)
+{
+    parent::beforeFilter($event);
+
+    $this->loadModel('Menus');
+    $menuItems = $this->Menus->find('all')->order(['ordre' => 'ASC']);
+    $this->request = $this->request->withAttribute('menuItems', $menuItems);
+}
+
 }

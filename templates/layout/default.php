@@ -35,13 +35,27 @@
             <?php endif; ?>
         </div>
     </nav>
-    <main class="main">
-        <div class="container">
-            <?= $this->Flash->render() ?>
-            <?= $this->fetch('content') ?>
-        </div>
-    </main>
-    <footer>
+    <div class="main">
+        <?php if ($this->request->getAttribute('identity')): ?>
+            <div id="menu" style="float: left; width: 20%; padding: 10px; background-color: #f4f4f4; height: 100vh;">
+                <h3>Menu</h3>
+                <ul>
+                    <li><a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'dashboard']) ?>">Dashboard</a></li>
+                    <li><a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'index']) ?>">Utilisateurs</a></li>
+                </ul>
+            </div>
+            <div id="content" style="float: right; width: 75%; padding: 10px;">
+                <?= $this->Flash->render() ?>
+                <?= $this->fetch('content') ?>
+            </div>
+        <?php else: ?>
+            <div id="content" style="width: 100%; padding: 10px;">
+                <?= $this->Flash->render() ?>
+                <?= $this->fetch('content') ?>
+            </div>
+        <?php endif; ?>
+    </div>
+    <footer style="clear: both;">
     </footer>
 </body>
 </html>

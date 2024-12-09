@@ -18,8 +18,7 @@ class MenusController extends AppController
      */
     public function index()
     {
-        $menus = $this->paginate($this->Menus);
-
+        $menus = $this->Menus->find('all')->order(['ordre' => 'ASC']);
         $this->set(compact('menus'));
     }
 
@@ -101,5 +100,40 @@ class MenusController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Update Order method
+     *
+     * This method handles the AJAX request to update the order of menus.
+     *
+     * @return \Cake\Http\Response|null|void
+     */
+    public function updateOrder()
+    {
+        $this->request->allowMethod(['post']);
+
+        $order = $this->request->getData('order');
+        if (!$order || !is_array($order)) {
+            return $this->response->withStatus(400)->withStringBody('Invalid data.');
+        }
+
+        $connection = $this->Menus->getConnection();
+        $connection->begin();
+
+        try {
+            foreach ($order as $index => $id) {
+                $menu = $this->Menus->get($id);
+                $menu->ordre = $index + 1; // Mise à jour de l'ordre
+                if (!$this->Menus->save($menu)) {
+                    throw new \Exception('Failed to save menu order.');
+                }
+            }
+            $connection->commit();
+            return $this->response->withStringBody('Order updated successfully.');
+        } catch (\Exception $e) {
+            $connection->rollback();
+            return $this->response->withStatus(500)->withStringBody('Failed to update order.');
+        }
     }
 }
