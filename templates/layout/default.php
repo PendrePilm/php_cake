@@ -42,6 +42,7 @@
                 <ul>
                     <li><a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'dashboard']) ?>">Dashboard</a></li>
                     <li><a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'index']) ?>">Utilisateurs</a></li>
+                    <li><?= $this->Html->link('Suivi du Sommeil', ['controller' => 'SleepLogs', 'action' => 'index']) ?></li>
                 </ul>
             </div>
             <div id="content" style="float: right; width: 75%; padding: 10px;">
