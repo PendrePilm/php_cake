@@ -9,7 +9,8 @@
     </title>
     <?= $this->Html->meta('icon') ?>
 
-    <?= $this->Html->css(['normalize.min', 'milligram.min', 'fonts', 'cake']) ?>
+    <?= $this->Html->css('style') ?>
+    <?= $this->Html->css(['normalize.min', 'milligram.min', 'fonts', 'cake']) ?> 
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
@@ -43,6 +44,7 @@
                     <li><a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'dashboard']) ?>">Dashboard</a></li>
                     <li><a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'index']) ?>">Utilisateurs</a></li>
                     <li><?= $this->Html->link('Suivi du Sommeil', ['controller' => 'SleepLogs', 'action' => 'index']) ?></li>
+                    <li><?= $this->Html->link('Graphique du Sommeil', ['controller' => 'SleepLogs', 'action' => 'graph']) ?></li>
                 </ul>
             </div>
             <div id="content" style="float: right; width: 75%; padding: 10px;">
@@ -59,4 +61,5 @@
     <footer style="clear: both;">
     </footer>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </html>

@@ -14,7 +14,9 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/menus/edit/:id', ['controller' => 'Menus', 'action' => 'edit'], ['pass' => ['id'], 'id' => '\d+']);
         $builder->connect('/menus/view/:id', ['controller' => 'Menus', 'action' => 'view'], ['pass' => ['id'], 'id' => '\d+']);
         $builder->connect('/menus/delete/:id', ['controller' => 'Menus', 'action' => 'delete'], ['pass' => ['id'], 'id' => '\d+']);
+        $builder->connect('/sleep-logs/graph', ['controller' => 'SleepLogs', 'action' => 'graph']);
         $builder->connect('/menus/update-order', ['controller' => 'Menus', 'action' => 'updateOrder']);
+
         $builder->fallbacks();
     });
 };

@@ -3,19 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-/**
- * SleepLogs Controller
- *
- * @property \App\Model\Table\SleepLogsTable $SleepLogs
- * @method \App\Model\Entity\SleepLog[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
 class SleepLogsController extends AppController
 {
-    /**
-     * Index method
-     *
-     * @return \Cake\Http\Response|null|void Renders view
-     */
     public function index()
     {
         $this->paginate = [
@@ -26,13 +15,6 @@ class SleepLogsController extends AppController
         $this->set(compact('sleepLogs'));
     }
 
-    /**
-     * View method
-     *
-     * @param string|null $id Sleep Log id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
     public function view($id = null)
     {
         $sleepLog = $this->SleepLogs->get($id, [
@@ -42,20 +24,12 @@ class SleepLogsController extends AppController
         $this->set(compact('sleepLog'));
     }
 
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
-     */
     public function add()
 {
-    // Créer une nouvelle entrée pour le journal de sommeil
     $sleepLog = $this->SleepLogs->newEmptyEntity();
     
-    // Récupérer les utilisateurs pour la liste déroulante
     $users = $this->SleepLogs->Users->find('list', ['limit' => 200]);
 
-    // Vérifier si le formulaire est soumis
     if ($this->request->is('post')) {
         $sleepLog = $this->SleepLogs->patchEntity($sleepLog, $this->request->getData());
         if ($this->SleepLogs->save($sleepLog)) {
@@ -65,7 +39,6 @@ class SleepLogsController extends AppController
         $this->Flash->error(__('The sleep log could not be saved. Please, try again.'));
     }
 
-    // Passer les données nécessaires à la vue
     $this->set(compact('sleepLog', 'users'));
 }
 
@@ -103,13 +76,6 @@ class SleepLogsController extends AppController
         $this->set(compact('weekLogs', 'totalCycles', 'greenIndicator'));
     }
 
-    /**
-     * Edit method
-     *
-     * @param string|null $id Sleep Log id.
-     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
     public function edit($id = null)
     {
         $sleepLog = $this->SleepLogs->get($id, [
@@ -128,13 +94,6 @@ class SleepLogsController extends AppController
         $this->set(compact('sleepLog', 'users'));
     }
 
-    /**
-     * Delete method
-     *
-     * @param string|null $id Sleep Log id.
-     * @return \Cake\Http\Response|null|void Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
@@ -147,4 +106,41 @@ class SleepLogsController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+
+    public function graph()
+    {
+        $userId = $this->Authentication->getIdentity()->get('id'); // Récupère l'utilisateur connecté
+        $sleepLogs = $this->SleepLogs->find('all', [
+            'conditions' => ['user_id' => $userId],
+            'order' => ['date' => 'ASC']
+        ])->toArray();
+    
+        $days = [];
+        $cycles = [];
+    
+        foreach ($sleepLogs as $log) {
+            $days[] = $log->date->format('Y-m-d'); // Date du jour
+            $bedtime = new \DateTime($log->bedtime);
+            $wakeTime = new \DateTime($log->wake_time);
+    
+            // Calcul de la durée de sommeil en heures
+            $duration = $wakeTime->diff($bedtime)->h + ($wakeTime->diff($bedtime)->i / 60);
+            // Calcul du nombre de cycles (un cycle de sommeil est d'environ 90 minutes)
+            $numCycles = round($duration * 60 / 90, 2);
+    
+            $cycles[] = $numCycles;
+        }
+    
+        $this->set(compact('days', 'cycles'));
+    }
+    
+
+    private function calculateSleepCycles($bedtime, $wakeTime)
+    {
+        $bedTimeInMinutes = strtotime($bedtime);
+        $wakeTimeInMinutes = strtotime($wakeTime);
+        $totalMinutes = ($wakeTimeInMinutes - $bedTimeInMinutes) / 60;
+        return round($totalMinutes / 90, 1);
+    }
+
 }

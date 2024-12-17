@@ -12,7 +12,6 @@
             <fieldset>
                 <legend><?= __('Entrez vos informations de sommeil') ?></legend>
                 
-                <!-- Sélection de l'utilisateur (si nécessaire, par exemple si vous avez plusieurs utilisateurs) -->
                 <?= $this->Form->control('user_id', ['options' => $users]); ?>
 
 

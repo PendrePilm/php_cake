@@ -5,18 +5,9 @@ namespace App\Mailer;
 
 use Cake\Mailer\Mailer;
 
-/**
- * Users mailer.
- */
 class UsersMailer extends Mailer
 {
-    /**
-     * Envoie un email de réinitialisation de mot de passe
-     *
-     * @param string $email L'email de l'utilisateur
-     * @param string $resetLink Le lien de réinitialisation du mot de passe
-     * @return void
-     */
+    
     public function sendResetPasswordEmail(string $email, string $resetLink): void
     {
         $this->setTo($email)

@@ -73,7 +73,6 @@
                 orderedIds.push($(this).data("id"));
             });
 
-            // Envoi via AJAX
             $.ajax({
                 url: "<?= $this->Url->build(['controller' => 'Menus', 'action' => 'updateOrder']) ?>",
                 method: "POST",
